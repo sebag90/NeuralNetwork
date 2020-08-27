@@ -65,6 +65,7 @@ class Network(object):
     def sigmoid_prime(self, z):
         return self.sigmoid(z)*(1-self.sigmoid(z))
     
+    ###
     
     def relu(self, z):
         return np.maximum(0, z)
@@ -73,26 +74,20 @@ class Network(object):
         z[z > 0] = 1
         z[z <= 0] = 0
         return z
+
+    ###
     
-   
     def softmax(self, x):
         e_x = np.exp(x - np.max(x))
-        return e_x / e_x.sum(axis=0) 
+        return e_x / e_x.sum(axis=1, keepdims=True)
     
     def softmax_prime(self, x):
         return x
     
     def identity(self, x):
         return x
-
     
-    # METHODS---------------------------------
-    
-    def feedforward(self, a):
-        for i in range(len(self.architecture)):
-            activation = self.activation_funcs[self.architecture[str(i+1)]["activation"]][0]
-            a = activation(np.dot(a, self.architecture[str(i+1)]["weights"]) + self.architecture[str(i+1)]["bias"])
-        return a
+    # ERROR-----------------------------------
     
     def cost(self, y_hat, y):
         y_hat = y_hat.reshape(y.shape)
@@ -102,4 +97,12 @@ class Network(object):
     def cost_prime(self, y_hat, y):
         y_hat = y_hat.reshape(y.shape)
         return y_hat - y
+
     
+    # METHODS---------------------------------
+    
+    def feedforward(self, a):
+        for i in range(len(self.architecture)):
+            activation = self.activation_funcs[self.architecture[str(i+1)]["activation"]][0]
+            a = activation(np.dot(a, self.architecture[str(i+1)]["weights"]) + self.architecture[str(i+1)]["bias"])
+        return a
