@@ -11,7 +11,20 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
     
     
+def save_keras(nn_model):
+    k = {}
+    for i in range(len(nn_model.layers)):
+        a = nn_model.layers[i].get_weights()
+        s = list(a)
 
+        k[str(i+1)] = {}
+        k[str(i+1)]["weights"] = s[0]
+        k[str(i+1)]["bias"] =s[1]
+        k[str(i+1)]["activation"] = str(nn_model.layers[i].activation).split()[1]
+
+    with open("model.json", "w", encoding="utf-8") as json_f:
+        json.dump(k, json_f, cls=NumpyEncoder, ensure_ascii=False, indent=4)
+    
     
 class Network(object):
 
@@ -77,12 +90,13 @@ class Network(object):
 
     ###
     
-    def softmax(self, x):
-        e_x = np.exp(x - np.max(x))
-        return e_x / e_x.sum(axis=1, keepdims=True)
+    def softmax(self, z):
+        m = np.max(z, axis=1, keepdims=True)
+        e = np.exp(z - m)
+        return e / np.sum(e, axis=1, keepdims=True)
     
-    def softmax_prime(self, x):
-        return x
+    def softmax_prime(self, z):
+        return softmax(z)  * (1 - softmax(z))
     
     def identity(self, x):
         return x
@@ -106,3 +120,5 @@ class Network(object):
             activation = self.activation_funcs[self.architecture[str(i+1)]["activation"]][0]
             a = activation(np.dot(a, self.architecture[str(i+1)]["weights"]) + self.architecture[str(i+1)]["bias"])
         return a
+    
+    #def backprop(self, a):
