@@ -10,6 +10,7 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
     
+
 # Function to save a keras model to Json so that it can be imported    
 def save_keras(nn_model):
     k = {}
@@ -36,7 +37,8 @@ class Network(object):
             "relu" :    self.relu,
             "softmax" : self.softmax,
             "sigmoid" : self.sigmoid,
-            "identity": self.identity        }
+            "identity": self.identity        
+            }
 
             
     # INITIALIZE, LOAD AND SAVE MODEL--------
@@ -89,7 +91,7 @@ class Network(object):
         
     def softmax(self, z, deriv = False):
         if deriv == True:
-            return softmax(z)  * (1 - softmax(z))
+            return self.softmax(z)  * (1 - self.softmax(z))
         else:
             m = np.max(z, axis=1, keepdims=True)
             e = np.exp(z - m)
@@ -113,16 +115,16 @@ class Network(object):
     
     # METHODS---------------------------------
     
-    def predict(self, a):
+    def predict(self, x):
         for i in range(len(self.architecture)):
             activation = self.activation_funcs[self.architecture[str(i+1)]["activation"]]
-            a = activation(np.dot(a, self.architecture[str(i+1)]["weights"]) + self.architecture[str(i+1)]["bias"])
-        return a
+            x = activation(np.dot(x, self.architecture[str(i+1)]["weights"]) + self.architecture[str(i+1)]["bias"])
+        return x
     
     # TODO: backprop
-    def backprop(self, a):
-        y_hat = predict(self, x)
+    def backprop(self, x, y):
+        y_hat = self.predict(x)
         
-        Eo = (y_hat.reshape(y.shape) - y) * relu_prime(Zo)
+        Eo = (y_hat.reshape(y.shape) - y) * self.relu(Zo, deriv = True)
     
 
