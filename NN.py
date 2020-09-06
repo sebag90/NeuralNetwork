@@ -3,14 +3,14 @@ import json
 
 
 
-# CLASS TO SERIALIZE NUMPY ARRAYS TO SAVE MODEL TO JSON
+# Class to serialize numpy arrays to save model to json
 class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
     
-    
+# Function to save a keras model to Json so that it can be imported    
 def save_keras(nn_model):
     k = {}
     for i in range(len(nn_model.layers)):
@@ -33,11 +33,10 @@ class Network(object):
     def __init__(self):
         self.architecture = {}
         self.activation_funcs = {
-            "relu" :    [self.relu, self.relu_prime],
-            "softmax" : [self.softmax, self.softmax_prime],
-            "sigmoid" : [self.sigmoid, self.sigmoid_prime],
-            "identity": [self.identity, self.identity]
-        }
+            "relu" :    self.relu,
+            "softmax" : self.softmax,
+            "sigmoid" : self.sigmoid,
+            "identity": self.identity        }
 
             
     # INITIALIZE, LOAD AND SAVE MODEL--------
@@ -72,32 +71,31 @@ class Network(object):
      
     # ACTIVATION FUNCTIONS AND DERIVATIVES--
     
-    def sigmoid(self, z):
-        return 1.0/(1.0+np.exp(-z))
+    def sigmoid(self, z, deriv = False):
+        if deriv == True:
+            return z * (1 - z)
+        else:
+            return 1.0/(1.0 + np.exp(-z))
     
-    def sigmoid_prime(self, z):
-        return self.sigmoid(z)*(1-self.sigmoid(z))
-    
-    ###
-    
-    def relu(self, z):
-        return np.maximum(0, z)
-    
-    def relu_prime(self, z):
-        z[z > 0] = 1
-        z[z <= 0] = 0
-        return z
+        
+    def relu(self, z, deriv = False):
+        if deriv == True:
+            z[z > 0] = 1
+            z[z <= 0] = 0
+            return z
+        else:
+            return np.maximum(0, z)
 
-    ###
+        
+    def softmax(self, z, deriv = False):
+        if deriv == True:
+            return softmax(z)  * (1 - softmax(z))
+        else:
+            m = np.max(z, axis=1, keepdims=True)
+            e = np.exp(z - m)
+            return e / np.sum(e, axis=1, keepdims=True)
     
-    def softmax(self, z):
-        m = np.max(z, axis=1, keepdims=True)
-        e = np.exp(z - m)
-        return e / np.sum(e, axis=1, keepdims=True)
-    
-    def softmax_prime(self, z):
-        return softmax(z)  * (1 - softmax(z))
-    
+
     def identity(self, x):
         return x
     
@@ -115,10 +113,16 @@ class Network(object):
     
     # METHODS---------------------------------
     
-    def feedforward(self, a):
+    def predict(self, a):
         for i in range(len(self.architecture)):
-            activation = self.activation_funcs[self.architecture[str(i+1)]["activation"]][0]
+            activation = self.activation_funcs[self.architecture[str(i+1)]["activation"]]
             a = activation(np.dot(a, self.architecture[str(i+1)]["weights"]) + self.architecture[str(i+1)]["bias"])
         return a
     
-    #def backprop(self, a):
+    # TODO: backprop
+    def backprop(self, a):
+        y_hat = predict(self, x)
+        
+        Eo = (y_hat.reshape(y.shape) - y) * relu_prime(Zo)
+    
+
