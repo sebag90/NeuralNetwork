@@ -75,23 +75,24 @@ class Network():
     
     def sigmoid(self, z, deriv = False):
         if deriv == True:
-            return z * (1 - z)
+            return self.sigmoid(z) * (1 - self.sigmoid(z))
         else:
             return 1.0/(1.0 + np.exp(-z))
     
         
     def relu(self, z, deriv = False):
         if deriv == True:
-            z[z > 0] = 1
-            z[z <= 0] = 0
-            return z
+            if z > 0:
+                return 1
+            else:
+                return 0
         else:
             return np.maximum(0, z)
 
         
     def softmax(self, z, deriv = False):
         if deriv == True:
-            return self.softmax(z)  * (1 - self.softmax(z))
+            return self.softmax(z) * (1 - self.softmax(z))
         else:
             m = np.max(z, axis=1, keepdims=True)
             e = np.exp(z - m)
