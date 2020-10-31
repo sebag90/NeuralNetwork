@@ -25,6 +25,9 @@ def save_keras(nn_model):
 
     with open("model.json", "w", encoding="utf-8") as json_f:
         json.dump(k, json_f, cls=NumpyEncoder, ensure_ascii=False, indent=4)
+
+
+
     
     
 class Network():
@@ -82,10 +85,7 @@ class Network():
         
     def relu(self, z, deriv = False):
         if deriv == True:
-            if z > 0:
-                return 1
-            else:
-                return 0
+            return np.where(z > 0, 1, 0)
         else:
             return np.maximum(0, z)
 
@@ -99,7 +99,7 @@ class Network():
             return e / np.sum(e, axis=1, keepdims=True)
     
 
-    def identity(self, x):
+    def identity(self, x, deriv = False):
         return x
     
     # ERROR-----------------------------------
@@ -115,6 +115,32 @@ class Network():
 
     
     # METHODS---------------------------------
+
+    def shuffle(self, a, b):
+        np.random.seed()
+        rnd_state = np.random.get_state()
+        np.random.shuffle(a)
+        np.random.set_state(rnd_state)
+        np.random.shuffle(b)
+        return a, b
+
+
+    def dataset(self, x, y, test_size=0.8 ):
+        np.random.seed()
+        rnd_state = np.random.get_state()
+        np.random.shuffle(x)
+        np.random.set_state(rnd_state)
+        np.random.shuffle(y)
+
+        limit = int(len(x)*test_size)
+
+        x_train = x[:limit]
+        y_train = y[:limit]
+        x_test = x[limit:]
+        y_test = y[limit:]
+
+        return x_train, x_test, y_train, y_test
+
     
     def predict(self, x, mem=False):
         
@@ -135,7 +161,6 @@ class Network():
             return x, memory
         else:
             return x
-
     
     
     def backpropagation(self, x, y):
@@ -148,7 +173,6 @@ class Network():
         y_hat, memory = self.predict(x, mem=True)
         
 
-        # Output error (delta)
         f_acti = self.activation_funcs[self.architecture[str(len(self.architecture))]["activation"]]
         Eo = (y_hat - y.reshape(y_hat.shape)) * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
         
@@ -166,32 +190,51 @@ class Network():
         return nablas
             
 
-    def update_weights(self, nablas, learning_rate):
+    def update_weights(self, nablas, learning_rate, len_mini_batch):
         for i in range(len(self.architecture)):
-            self.architecture[str(i+1)]["weight"] =+ nablas[str(i+1)]["weight"] * learning_rate
-            self.architecture[str(i+1)]["bias"] =+ nablas[str(i+1)]["bias"] * learning_rate
-      
+            nabla_b = np.zeros(self.architecture[str(i+1)]["bias"].shape)
+            nabla_w = np.zeros(self.architecture[str(i+1)]["weight"].shape)
 
+            step_w = nabla_w - nablas[str(i+1)]["weight"]
+            step_b = nabla_b - nablas[str(i+1)]["bias"]
+           
+            self.architecture[str(i+1)]["weight"] =- (learning_rate/len_mini_batch) + step_w
+            self.architecture[str(i+1)]["bias"] =- (learning_rate/len_mini_batch) + step_b
+   
+            
 
-
-    def fit(self, x, y, l_rate=0.4, epochs=100):
+    def fit(self, x, y, l_rate=0.01, epochs=100, batch_size=0.3, val_size=0.2):
         for epoch in range(epochs):
-            nablas = self.backpropagation(x, y)
-            self.update_weights(nablas, l_rate)
-            y_pred = self.predict(x)
-            loss = self.cost(y_pred, y)
-            print(f"epoch: {epoch}, loss: {loss}")
-        
+            X, Y = self.shuffle(x, y)
+            
+            batches = len(x) // int(len(x)*batch_size) 
+            
+            batches_x = np.array_split(X, batches)
+            batches_y = np.array_split(Y, batches)
+            
+            
+            for batch_x, batch_y in zip(batches_x, batches_y):
+                
+                x_trainb, x_testb, y_trainb, y_testb = self.dataset(batch_x, batch_y)
+                nablas = self.backpropagation(x_trainb, y_trainb)
+                self.update_weights(nablas, l_rate, len(batch_x))
+                y_pred = self.predict(x_testb)
+                loss = self.cost(y_pred, y_testb)
+            
+            print(f"epoch {epoch+1} - loss: {loss}")
+                   
         
 
 if __name__ == "__main__":
-    np.random.seed(99)
+    def print_arch(net):
+        for i in net.architecture:
+            print(net.architecture[i]["weight"])
+            print(net.architecture[i]["bias"])
+    #np.random.seed(99)
     net = Network()
-    net.init([2, 3, 4, 1],["sigmoid", "sigmoid",  "sigmoid"])
+    net.init([2, 3, 4, 1],["relu", "relu",  "sigmoid"])
     x = np.array([[2, 5], [8, 4], [4, 3]])
     y = np.array([1, 0, 1])
-    print(net.predict(x))
-    net.fit(x, y, epochs = 10)
-    print(net.predict(x))
-    
+    #print_arch(net)
+    net.fit(x, y, epochs=1)
    
