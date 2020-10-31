@@ -174,7 +174,7 @@ class Network():
         
 
         f_acti = self.activation_funcs[self.architecture[str(len(self.architecture))]["activation"]]
-        Eo = (y_hat - y.reshape(y_hat.shape)) * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
+        Eo = self.cost(y_hat, y, deriv=True) * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
         
         deltas[str(len(self.architecture))] = Eo 
         
@@ -200,11 +200,10 @@ class Network():
            
             self.architecture[str(i+1)]["weight"] =- (learning_rate/len_mini_batch) + step_w
             self.architecture[str(i+1)]["bias"] =- (learning_rate/len_mini_batch) + step_b
-   
-            
+                       
 
-    def fit(self, x, y, l_rate=0.01, epochs=100, batch_size=0.3, val_size=0.2):
-        for epoch in range(epochs):
+    def fit(self, x, y, l_rate=0.01, epochs=100, batch_size=0.3):
+        for epoch in range(1, epochs+1):
             X, Y = self.shuffle(x, y)
             
             batches = len(x) // int(len(x)*batch_size) 
@@ -221,7 +220,8 @@ class Network():
                 y_pred = self.predict(x_testb)
                 loss = self.cost(y_pred, y_testb)
             
-            print(f"epoch {epoch+1} - loss: {loss}")
+            if epoch%50 == 0:
+                print(f"epoch {epoch} - loss: {loss}")
                    
         
 
