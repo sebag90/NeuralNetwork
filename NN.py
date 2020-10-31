@@ -44,14 +44,14 @@ class Network():
     # INITIALIZE, LOAD AND SAVE MODEL--------
             
     def init(self, sizes, activations):
-        np.random.seed(99)
+        
         if len(sizes) -1 != len(activations):
             print("number of activations must be equal to number of layers - 1")
         else:
             for i in range(len(sizes) -1):
                 self.architecture[str(i+1)] = {
-                    "weight" : np.random.rand(sizes[i], sizes[i+1])* 0.1,
-                    "bias" : np.random.rand(sizes[i+1])* 0.1,
+                    "weight" : np.random.uniform(-1, 1, (sizes[i], sizes[i+1])),
+                    "bias" : np.random.uniform(-1, 1, (1, sizes[i+1])),
                     "activation" : activations[i]
                 }
             
@@ -104,14 +104,14 @@ class Network():
     
     # ERROR-----------------------------------
     
-    def cost(self, y_hat, y, deriv = False):
+    def cost(self, y_pred, y_true, deriv = False):
         if deriv == False:
-            y_hat = y_hat.reshape(y.shape)
-            cost = np.sum((y_hat - y)**2) / 2.0
+            n = y_pred.shape[1]
+            cost = (1./(2*n)) * np.sum((y_true - y_pred) ** 2)
             return cost
         else:
-            y_hat = y_hat.reshape(y.shape)
-            return y_hat - y
+            cost_prime = y_pred - y_true
+            return cost_prime
 
     
     # METHODS---------------------------------
@@ -119,21 +119,17 @@ class Network():
     def predict(self, x, mem=False):
         
         memory = {}
-
+        memory["0"] = {"activation" : x}
         for i in range(len(self.architecture)):
-
-            memory[str(i+1)] = {"z" : None,
-                                "activation" : None}
-
-
             activation = self.activation_funcs[self.architecture[str(i+1)]["activation"]]
             z = np.dot(x, self.architecture[str(i+1)]["weight"]) + self.architecture[str(i+1)]["bias"]
             x = activation(z)
             
             if mem == True:
+                memory[str(i+1)] = {"z" : None,
+                                    "activation" : None}
                 memory[str(i+1)]["z"] = z
                 memory[str(i+1)]["activation"] = x
-
 
         if mem == True:
             return x, memory
@@ -142,42 +138,60 @@ class Network():
 
     
     
-    def backprop(self, x, y):
+    def backpropagation(self, x, y):
+        deltas = {}
         nablas = {}
         for i in range(len(self.architecture)):
             nablas[str(i +1)] = {"weight": np.zeros((self.architecture[str(i+1)]["weight"]).shape) ,
                             "bias" : np.zeros((self.architecture[str(i+1)]["bias"]).shape)}
-        
+            deltas[str(i+1)] = None
         y_hat, memory = self.predict(x, mem=True)
         
+
         # Output error (delta)
         f_acti = self.activation_funcs[self.architecture[str(len(self.architecture))]["activation"]]
-        Eo = (memory[str(len(self.architecture))]["activation"] - y.reshape(y_hat.shape)) * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
+        Eo = (y_hat - y.reshape(y_hat.shape)) * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
         
-        nablas[str(len(self.architecture))]["bias"] = np.sum(Eo, axis=0, keepdims=True)
-        nablas[str(len(self.architecture))]["weight"] = np.dot(Eo, memory[str(len(self.architecture))]["activation"].T)
+        deltas[str(len(self.architecture))] = Eo 
         
-        for i in nablas:
-            print(i)
-            print(nablas[i])
+        for l in range(len(self.architecture), 1, -1):
+            acti_f = self.activation_funcs[self.architecture[str(i-1)]["activation"]]
+            Eh = np.dot(deltas[str(l)], self.architecture[str(l)]["weight"].T) * acti_f(memory[str(l-1)]["z"], deriv=True)
+            deltas[str(l-1)] = Eh
 
-        for i in range(len(self.architecture), 1, -1):
-            pass
-            # acti_f = self.activation_funcs[self.architecture[str(i-1)]["activation"]]
-            # Eh = np.dot(Eo, activations[-i].T) * acti_f(Zs[i-2], deriv=True)
-            # nablas[str(i-1)]["weight"] = np.dot(Eh, x).T
-            # nablas[str(i-1)]["bias"] = np.sum(Eh, axis=0, keepdims=True)
-
+        for l in range(len(self.architecture)):
+            nablas[str(l+1)]["weight"] = np.dot(deltas[str(l+1)].T, memory[str(l)]["activation"]).T
+            nablas[str(l+1)]["bias"] = np.expand_dims(deltas[str(l+1)].mean(axis=0), 0)
+            
         return nablas
             
+
+    def update_weights(self, nablas, learning_rate):
+        for i in range(len(self.architecture)):
+            self.architecture[str(i+1)]["weight"] =+ nablas[str(i+1)]["weight"] * learning_rate
+            self.architecture[str(i+1)]["bias"] =+ nablas[str(i+1)]["bias"] * learning_rate
+      
+
+
+
+    def fit(self, x, y, l_rate=0.4, epochs=100):
+        for epoch in range(epochs):
+            nablas = self.backpropagation(x, y)
+            self.update_weights(nablas, l_rate)
+            y_pred = self.predict(x)
+            loss = self.cost(y_pred, y)
+            print(f"epoch: {epoch}, loss: {loss}")
         
         
 
 if __name__ == "__main__":
+    np.random.seed(99)
     net = Network()
-    net.init([2, 3, 4, 1],["sigmoid","sigmoid", "sigmoid"])
+    net.init([2, 3, 4, 1],["sigmoid", "sigmoid",  "sigmoid"])
     x = np.array([[2, 5], [8, 4], [4, 3]])
     y = np.array([1, 0, 1])
-    net.backprop(x, y)
+    print(net.predict(x))
+    net.fit(x, y, epochs = 10)
+    print(net.predict(x))
     
    
