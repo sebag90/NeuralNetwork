@@ -31,9 +31,8 @@ def save_keras(nn_model):
     
     
 class Network():
-
-
-    # initialize network
+    
+    
     def __init__(self):
         self.architecture = {}
         self.activation_funcs = {
@@ -107,11 +106,10 @@ class Network():
     def cost(self, y_pred, y_true, deriv = False):
         if deriv == False:
             n = y_pred.shape[1]
-            cost = (1./(2*n)) * np.sum((y_true - y_pred) ** 2)
+            cost = 1/(n**2) * np.sum((y_true.reshape(y_pred.shape) - y_pred)**2)
             return cost
         else:
-            #cost_prime = y_pred - y_true.reshape(y_pred.shape)
-            cost_prime = y_pred - y_true
+            cost_prime = y_pred - y_true.reshape(y_pred.shape)
             return cost_prime
 
     
@@ -143,7 +141,7 @@ class Network():
         return x_train, x_test, y_train, y_test
 
     
-    def predict(self, x, mem=False, backprop=False):
+    def predict(self, x, mem=False):
         memory = {}
         memory["0"] = {"activation" : x}
         for i in range(len(self.architecture)):
@@ -157,14 +155,11 @@ class Network():
                 memory[str(i+1)]["z"] = z
                 memory[str(i+1)]["activation"] = x
 
-        if backprop == True:
-            if mem == True:
-                return x.T, memory
-            else:
-                return x.T
+        if mem == True:
+            return x, memory
         else:
-            return x.T[0]
-    
+            return x
+      
     
     def backpropagation(self, x, y):
         deltas = {}
@@ -173,10 +168,10 @@ class Network():
             nablas[str(i +1)] = {"weight": np.zeros((self.architecture[str(i+1)]["weight"]).shape) ,
                             "bias" : np.zeros((self.architecture[str(i+1)]["bias"]).shape)}
             deltas[str(i+1)] = None
-        y_hat, memory = self.predict(x, mem=True, backprop=True)
+        y_hat, memory = self.predict(x, mem=True)
 
         f_acti = self.activation_funcs[self.architecture[str(len(self.architecture))]["activation"]]
-        Eo = self.cost(y_hat, y, deriv=True).T * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
+        Eo = self.cost(y_hat, y, deriv=True) * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
         
         deltas[str(len(self.architecture))] = Eo 
         
@@ -221,7 +216,7 @@ class Network():
                     epoch_nablas[i]["weight"] += batch_nablas[i]["weight"] / len(batch_x)
                     epoch_nablas[i]["bias"] += batch_nablas[i]["bias"] / len(batch_x)
 
-                y_pred = self.predict(x_testb, backprop=True)
+                y_pred = self.predict(x_testb)
                 loss = self.cost(y_pred, y_testb)
 
             self.update_weights(epoch_nablas, l_rate)
