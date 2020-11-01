@@ -99,7 +99,10 @@ class Network():
     
 
     def linear(self, z, deriv=False):
-        return z
+        if deriv == False:
+            return z
+        else:
+            return np.ones(z.shape)
     
 
     def tanh(self, z, deriv=False):
