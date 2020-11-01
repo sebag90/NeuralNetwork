@@ -32,7 +32,7 @@ def save_keras(nn_model):
     
 class Network():
 
-    
+
     # initialize network
     def __init__(self):
         self.architecture = {}
@@ -47,7 +47,6 @@ class Network():
     # INITIALIZE, LOAD AND SAVE MODEL--------
             
     def init(self, sizes, activations):
-        
         if len(sizes) -1 != len(activations):
             print("number of activations must be equal to number of layers - 1")
         else:
@@ -57,8 +56,8 @@ class Network():
                     "bias" : np.random.uniform(-1, 1, (1, sizes[i+1])),
                     "activation" : activations[i]
                 }
-            
-            
+
+
     def load_model(self):
         with open("model.json", "r") as dict_file:
             model = json.load(dict_file) 
@@ -102,6 +101,7 @@ class Network():
     def identity(self, x, deriv = False):
         return x
     
+
     # ERROR-----------------------------------
     
     def cost(self, y_pred, y_true, deriv = False):
@@ -143,8 +143,7 @@ class Network():
         return x_train, x_test, y_train, y_test
 
     
-    def predict(self, x, mem=False):
-        
+    def predict(self, x, mem=False, backprop=False):
         memory = {}
         memory["0"] = {"activation" : x}
         for i in range(len(self.architecture)):
@@ -158,10 +157,13 @@ class Network():
                 memory[str(i+1)]["z"] = z
                 memory[str(i+1)]["activation"] = x
 
-        if mem == True:
-            return x.T, memory
+        if backprop == True:
+            if mem == True:
+                return x.T, memory
+            else:
+                return x.T
         else:
-            return x.T
+            return x.T[0]
     
     
     def backpropagation(self, x, y):
@@ -171,7 +173,7 @@ class Network():
             nablas[str(i +1)] = {"weight": np.zeros((self.architecture[str(i+1)]["weight"]).shape) ,
                             "bias" : np.zeros((self.architecture[str(i+1)]["bias"]).shape)}
             deltas[str(i+1)] = None
-        y_hat, memory = self.predict(x, mem=True)
+        y_hat, memory = self.predict(x, mem=True, backprop=True)
 
         f_acti = self.activation_funcs[self.architecture[str(len(self.architecture))]["activation"]]
         Eo = self.cost(y_hat, y, deriv=True).T * f_acti(memory[str(len(self.architecture))]["z"], deriv=True)
@@ -206,12 +208,12 @@ class Network():
             batches_y = np.array_split(Y, batches)
             
             epoch_nablas = {}
+
             for i in range(len(self.architecture)):
                 epoch_nablas[str(i+1)] = {"weight" : np.zeros(self.architecture[str(i+1)]["weight"].shape),
-                                          "bias" : np.zeros(self.architecture[str(i+1)]["bias"].shape) }
+                                          "bias"   : np.zeros(self.architecture[str(i+1)]["bias"].shape) }
             
             for batch_x, batch_y in zip(batches_x, batches_y):
-                
                 x_trainb, x_testb, y_trainb, y_testb = self.dataset(batch_x, batch_y)
                 batch_nablas = self.backpropagation(x_trainb, y_trainb)
                 
@@ -219,28 +221,10 @@ class Network():
                     epoch_nablas[i]["weight"] += batch_nablas[i]["weight"] / len(batch_x)
                     epoch_nablas[i]["bias"] += batch_nablas[i]["bias"] / len(batch_x)
 
-
-                y_pred = self.predict(x_testb)
+                y_pred = self.predict(x_testb, backprop=True)
                 loss = self.cost(y_pred, y_testb)
 
             self.update_weights(epoch_nablas, l_rate)
            
             if epoch%50 == 0:
-                print(f"epoch {epoch}/{epochs}\t| loss: {loss:10.6f}")
-                   
-        
-
-if __name__ == "__main__":
-    def print_arch(net):
-        for i in net.architecture:
-            print(net.architecture[i]["weight"])
-            print(net.architecture[i]["bias"])
-    #np.random.seed(99)
-    net = Network()
-    net.init([2, 3, 4, 1],["sigmoid", "sigmoid",  "sigmoid"])
-    x = np.array([[2, 5], [8, 4], [4, 3]])
-    y = np.array([1, 0, 1])
-    #print_arch(net)
-    net.backpropagation(x, y)
-  
-   
+                print(f"epoch {epoch}/{epochs}\t| loss: {loss:10.6f}") 
