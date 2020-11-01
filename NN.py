@@ -223,11 +223,10 @@ class Network():
                 y_pred = self.predict(x_testb)
                 loss = self.cost(y_pred, y_testb)
 
-           
             self.update_weights(epoch_nablas, l_rate)
            
             if epoch%50 == 0:
-                print(f"epoch {epoch}\t| loss: {loss:2f}")
+                print(f"epoch {epoch}\t| loss: {loss:10.6f}")
                    
         
 
