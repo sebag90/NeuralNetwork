@@ -17,6 +17,7 @@ The following activation functions are currently supported:
 * Sigmoid
 * ReLu
 * Softmax
+* Tanh
 * Identity (linear function)
 
 The weights can either be randomly initialized  with the init method which takes 2 lists as input, one containing the number of neurons per layer (the number representing the input layer must be equal to the number of features of the data). The second list contains the activation functions (in string) for each layer.  

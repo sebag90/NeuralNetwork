@@ -39,7 +39,8 @@ class Network():
             "relu" :    self.relu,
             "softmax" : self.softmax,
             "sigmoid" : self.sigmoid,
-            "linear": self.linear        
+            "linear": self.linear,
+            "tanh" : self.tanh        
             }
 
             
@@ -74,21 +75,21 @@ class Network():
      
     # ACTIVATION FUNCTIONS AND DERIVATIVES--
     
-    def sigmoid(self, z, deriv = False):
+    def sigmoid(self, z, deriv=False):
         if deriv == True:
             return self.sigmoid(z) * (1 - self.sigmoid(z))
         else:
             return 1.0/(1.0 + np.exp(-z))
     
         
-    def relu(self, z, deriv = False):
+    def relu(self, z, deriv=False):
         if deriv == True:
             return np.where(z > 0, 1, 0)
         else:
             return np.maximum(0, z)
 
         
-    def softmax(self, z, deriv = False):
+    def softmax(self, z, deriv=False):
         if deriv == True:
             return self.softmax(z) * (1 - self.softmax(z))
         else:
@@ -97,9 +98,16 @@ class Network():
             return e / np.sum(e, axis=1, keepdims=True)
     
 
-    def linear(self, x, deriv = False):
-        return x
+    def linear(self, z, deriv=False):
+        return z
     
+
+    def tanh(self, z, deriv=False):
+        if deriv == True:
+            return 1 - np.power(self.tanh(z),2)
+        else:
+            return np.tanh(z)
+
 
     # ERROR-----------------------------------
     
