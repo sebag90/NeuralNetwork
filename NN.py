@@ -226,7 +226,7 @@ class Network():
             self.update_weights(epoch_nablas, l_rate)
            
             if epoch%50 == 0:
-                print(f"epoch {epoch}\t| loss: {loss:10.6f}")
+                print(f"epoch {epoch}/{epochs}\t| loss: {loss:10.6f}")
                    
         
 
