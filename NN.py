@@ -39,7 +39,7 @@ class Network():
             "relu" :    self.relu,
             "softmax" : self.softmax,
             "sigmoid" : self.sigmoid,
-            "identity": self.identity        
+            "linear": self.linear        
             }
 
             
@@ -97,7 +97,7 @@ class Network():
             return e / np.sum(e, axis=1, keepdims=True)
     
 
-    def identity(self, x, deriv = False):
+    def linear(self, x, deriv = False):
         return x
     
 
