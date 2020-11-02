@@ -3,6 +3,8 @@
 A fully connected neural network written in python (and numpy)
 
 
+![](nn.png)
+
 ## Dependencies:
 - numpy: https://numpy.org/
 

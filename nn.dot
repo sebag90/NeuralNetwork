@@ -1,0 +1,114 @@
+digraph G {
+	graph [ranksep = "1", nodesep = ".5", dpi = 300 ];
+        rankdir=LR
+		splines=line
+        nodesep=.2;
+        
+        node [label=""];
+        
+        subgraph cluster_0 {
+		color=white;
+        node [style=solid,color=cornflowerblue, shape=circle];
+        edge [style=dashed];
+		x1 x2 x3;
+		label = "input layer";
+	}
+
+	subgraph cluster_1 {
+		color=white;
+		node [style=solid,color=darkorchid4, shape=circle];
+		edge [arrowhead=none,arrowtail=dot];
+		a12 a22 a32 a42 a52  ;
+		label = "hidden layer 1";
+	}
+
+
+
+	subgraph cluster_3 {
+		color=white;
+		node [style=solid,color=darkorchid4, shape=circle];
+		edge [arrowhead=none,arrowtail=dot];
+		b12 b22 b32 b42 b52;
+		label="hidden layer 2";
+	}
+	
+	
+	subgraph cluster_4 {
+		color=white;
+		node [style=solid,color=darkgreen, shape=circle];
+		edge [arrowhead=none,arrowtail=dot];
+		O1 O2 ;
+		label="output layer";
+	}
+
+        x1 -> a12;
+        x1 -> a22;
+        x1 -> a32;
+        x1 -> a42;
+        x1 -> a52;
+
+    
+
+        x2 -> a12;
+        x2 -> a22;
+        x2 -> a32;
+        x2 -> a42;
+        x2 -> a52;
+	
+ 
+        x3 -> a12;
+        x3 -> a22;
+        x3 -> a32;
+        x3 -> a42;
+        x3 -> a52;
+	
+      
+		a12 -> b12
+        a22 -> b22
+        a32 -> b32
+        a42 -> b42
+        a52 -> b52
+	
+     	a12 -> b52
+        a22 -> b12
+        a32 -> b22
+        a42 -> b32
+        a52 -> b42
+
+        a12 -> b42
+        a22 -> b52
+        a32 -> b12
+        a42 -> b22
+        a52 -> b32
+        
+        a12 -> b32
+        a22 -> b42
+        a32 -> b52
+        a42 -> b12
+        a52 -> b22
+
+		a12 -> b22
+        a22 -> b32
+        a32 -> b42
+        a42 -> b52
+        a52 -> b12
+
+        
+        b12 -> O1
+        b22 -> O1
+        b32 -> O1
+        b42 -> O1
+        b52 -> O1
+	
+     
+
+        b12 -> O2
+        b22 -> O2
+        b32 -> O2
+        b42 -> O2
+        b52 -> O2
+	
+     
+
+ 
+}
