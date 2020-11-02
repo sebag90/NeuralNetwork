@@ -221,7 +221,7 @@ class Network():
             batches_y = np.array_split(Y, batches)
 
             it = 0
-            print(f"epoch {epoch}/{epochs}\t")
+            print(f"Epoch {epoch}/{epochs}\t")
             
             for batch_x, batch_y in zip(batches_x, batches_y):
                 x_trainb, x_testb, y_trainb, y_testb = self.dataset(batch_x, batch_y)
