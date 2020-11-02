@@ -3,7 +3,7 @@
 A fully connected neural network written in python (and numpy)
 
 
-![](nn.png)
+![](img/nn.png)
 
 ## Dependencies:
 - numpy: https://numpy.org/
