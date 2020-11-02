@@ -27,7 +27,13 @@ def save_keras(nn_model):
         json.dump(k, json_f, cls=NumpyEncoder, ensure_ascii=False, indent=4)
 
 
-
+def print_progress_bar(iteration, total, prefix = "", suffix = "", decimals = 1, length = 100, fill = "#", printEnd = "\r"):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '.' * (length - filledLength)
+    print(f"\r{prefix} [{bar}] {percent}% {suffix}", end = printEnd)
+    if iteration == total:
+        print()
     
     
 class Network():
@@ -204,33 +210,25 @@ class Network():
             self.architecture[str(i+1)]["bias"] -= learning_rate * nablas[str(i+1)]["bias"]
 
 
-    def fit(self, x, y, l_rate=0.01, epochs=100, batch_size=0.3):
+    def fit(self, x, y, l_rate=0.01, epochs=10, batch_size=32):
+        
         for epoch in range(1, epochs+1):
             X, Y = self.shuffle(x, y)
             
-            batches = len(x) // int(len(x)*batch_size) 
+            batches = len(x) // batch_size
             
             batches_x = np.array_split(X, batches)
             batches_y = np.array_split(Y, batches)
-            
-            epoch_nablas = {}
 
-            for i in range(len(self.architecture)):
-                epoch_nablas[str(i+1)] = {"weight" : np.zeros(self.architecture[str(i+1)]["weight"].shape),
-                                          "bias"   : np.zeros(self.architecture[str(i+1)]["bias"].shape) }
+            it = 0
+            print(f"epoch {epoch}/{epochs}\t")
             
             for batch_x, batch_y in zip(batches_x, batches_y):
                 x_trainb, x_testb, y_trainb, y_testb = self.dataset(batch_x, batch_y)
                 batch_nablas = self.backpropagation(x_trainb, y_trainb)
-                
-                for i in batch_nablas:
-                    epoch_nablas[i]["weight"] += batch_nablas[i]["weight"] / len(batch_x)
-                    epoch_nablas[i]["bias"] += batch_nablas[i]["bias"] / len(batch_x)
-
                 y_pred = self.predict(x_testb)
                 loss = self.cost(y_pred, y_testb)
-
-            self.update_weights(epoch_nablas, l_rate)
-           
-            if epoch%50 == 0:
-                print(f"epoch {epoch}/{epochs}\t| loss: {loss:10.6f}") 
+                self.update_weights(batch_nablas, l_rate)
+                
+                print_progress_bar(it + 1, len(batches_x), prefix=f"{it+1}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=40)
+                it += 1
