@@ -1,8 +1,6 @@
 from NN import *
-from sklearn.datasets import fetch_openml
 from sklearn.metrics import accuracy_score
 import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from keras.utils.np_utils import to_categorical
 from keras.datasets import mnist
@@ -20,21 +18,10 @@ x_test = (x_test/255).astype('float32')
 
 
 
-
-
-
-
-# x, y = fetch_openml('mnist_784', version=1, return_X_y=True)
-# x = (x/255).astype('float32')
-# y = to_categorical(y)
-
-# x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.15, random_state=42)
-
-
 net = Network()
 net.init([784, 128, 64, 10], ["relu", "sigmoid", "softmax"])
 
-net.fit(x_train, y_train, epochs=3)
+net.fit(x_train, y_train, epochs=10)
 
 y_pred = net.predict(x_test)
 
@@ -43,11 +30,6 @@ for i in y_pred:
     newypred.append(np.argmax(i))
     
 y_pred = np.array(newypred)
-
-# newytest = []
-# for i in y_test:
-#     newytest.append(np.argmax(i))
-# y_test = np.array(newytest)
 
 cmatrix = confusion_matrix(y_test, y_pred)
 print(cmatrix)

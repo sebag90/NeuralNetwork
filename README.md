@@ -37,7 +37,12 @@ net.init([3, 5, 5, 2], ["relu", "sigmoid", "softmax"])
 
 After initialization, the neural network can be trained:  
 ```python
-net.fit(x_train, y_train)
+net.fit(x_train, y_train, l_rate=0.01, epochs=10, batch_size=32)
+"""
+l_rate = learning rate, default = 0.01
+epochs = number of epochs used for training, default = 10
+batch_size = lenght of each mini batch, default = 32
+"""
 ```
 
 And finally, predictions can be made:
