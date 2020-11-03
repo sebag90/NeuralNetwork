@@ -211,7 +211,6 @@ class Network():
 
 
     def fit(self, x, y, l_rate=0.01, epochs=10, batch_size=32):
-        
         for epoch in range(1, epochs+1):
             X, Y = self.shuffle(x, y)
             
@@ -224,11 +223,16 @@ class Network():
             print(f"Epoch {epoch}/{epochs}\t")
             
             for batch_x, batch_y in zip(batches_x, batches_y):
+                batch_loss = []
                 x_trainb, x_testb, y_trainb, y_testb = self.dataset(batch_x, batch_y)
                 batch_nablas = self.backpropagation(x_trainb, y_trainb)
                 y_pred = self.predict(x_testb)
                 loss = self.cost(y_pred, y_testb)
+                batch_loss.append(loss)
                 self.update_weights(batch_nablas, l_rate)
+                
+                if it+1 == len(batches_x):
+                    loss = np.mean(batch_loss)
                 
                 print_progress_bar(it + 1, len(batches_x), prefix=f"{it+1}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=40)
                 it += 1
