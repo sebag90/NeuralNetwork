@@ -31,4 +31,16 @@ The neural network in the picture above will be initialized like this:
 ```python
 net = Network()
 net.init([3, 5, 5, 2], ["relu", "sigmoid", "softmax"])
+
+#Activations: relu, sigmoid, softmax, tanh, linear
+```
+
+After initialization, the neural network can be trained:  
+```python
+net.fit(x_train, y_train)
+```
+
+And finally, predictions can be made:
+```python
+y_pred = net.predict(x_test)
 ```
