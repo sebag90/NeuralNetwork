@@ -32,7 +32,7 @@ The neural network in the picture above will be initialized like this:
 net = Network()
 net.init([3, 5, 5, 2], ["relu", "sigmoid", "softmax"])
 
-#Activations: relu, sigmoid, softmax, tanh, linear
+# Activations: relu, sigmoid, softmax, tanh, linear
 ```
 
 After initialization, the neural network can be trained:  
