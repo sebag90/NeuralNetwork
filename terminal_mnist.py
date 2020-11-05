@@ -21,7 +21,7 @@ x_test = (x_test/255).astype('float32')
 net = Network()
 net.init([784, 128, 64, 10], ["relu", "sigmoid", "softmax"])
 
-net.fit(x_train, y_train, epochs=10)
+net.fit(x_train, y_train, epochs=5)
 
 y_pred = net.predict(x_test)
 
@@ -34,3 +34,4 @@ y_pred = np.array(newypred)
 cmatrix = confusion_matrix(y_test, y_pred)
 print(cmatrix)
 print(f"Accuracy score: {metrics.accuracy_score(y_test, y_pred):10.5}")
+print(net.history["loss"])

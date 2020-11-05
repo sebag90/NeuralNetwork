@@ -41,6 +41,7 @@ class Network():
     
     def __init__(self):
         self.architecture = {}
+        self.history = { "loss": []}
         self.activation_funcs = {
             "relu" :    self.relu,
             "softmax" : self.softmax,
@@ -50,7 +51,7 @@ class Network():
             }
 
             
-    # INITIALIZE, LOAD AND SAVE MODEL--------
+    # INITIALIZE, PRINT LOAD AND SAVE MODEL--------
             
     def init(self, sizes, activations):
         if len(sizes) -1 != len(activations):
@@ -77,6 +78,15 @@ class Network():
     def save_model(self):
         with open("model.json", "w", encoding="utf-8") as json_f:
             json.dump(self.architecture, json_f, cls=NumpyEncoder, ensure_ascii=False, indent=4)
+
+    
+    def print_model(self):
+        if len(self.architecture) == 0:
+            print("The network was not initialized yet")
+        else:
+            print(f"Input Layer:\tNeurons:{self.architecture['1']['weight'].shape[0]}")
+            for i in self.architecture:
+                print(f"Layer {i}:\tNeurons:{self.architecture[i]['weight'].shape[1]}, Activation: {self.architecture[i]['activation']}")
         
      
     # ACTIVATION FUNCTIONS AND DERIVATIVES--
@@ -233,6 +243,14 @@ class Network():
                 
                 if it+1 == len(batches_x):
                     loss = np.mean(batch_loss)
+                    self.history["loss"].append(loss)
                 
                 print_progress_bar(it + 1, len(batches_x), prefix=f"{it+1}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=40)
                 it += 1
+
+
+
+if __name__ == "__main__":
+    net = Network()
+    net.init([3, 5, 7, 2], ["sigmoid", "sigmoid", "sigmoid"])
+    net.print_model()
