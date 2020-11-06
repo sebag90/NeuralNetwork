@@ -100,7 +100,7 @@ class Network():
         
     def relu(self, z, deriv=False):
         if deriv == True:
-            return np.where(z > 0, 1, 0)
+            return (z > 0).astype(z.dtype)
         else:
             return np.maximum(0, z)
 
