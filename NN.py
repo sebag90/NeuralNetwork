@@ -80,13 +80,20 @@ class Network():
             json.dump(self.architecture, json_f, cls=NumpyEncoder, ensure_ascii=False, indent=4)
 
     
-    def print_model(self):
+    def summary(self):
         if len(self.architecture) == 0:
             print("The network was not initialized yet")
         else:
+            total_parameters = 0
             print(f"Input Layer:\tNeurons:{self.architecture['1']['weight'].shape[0]}")
             for i in self.architecture:
-                print(f"Layer {i}:\tNeurons:{self.architecture[i]['weight'].shape[1]}, Activation: {self.architecture[i]['activation']}")
+                neurons = self.architecture[i]['weight'].shape[1]
+                activation = self.architecture[i]['activation']
+                parameters = self.architecture[i]["weight"].shape[0]*self.architecture[i]["weight"].shape[1]
+                parameters += self.architecture[i]["bias"].shape[0]*self.architecture[i]["bias"].shape[1]
+                total_parameters += parameters
+                print(f"Layer {i}:\tNeurons:{neurons}, Activation: {activation}, Parameters: {parameters}")
+            print(f"Total parameters: {total_parameters}")
         
      
     # ACTIVATION FUNCTIONS AND DERIVATIVES--
