@@ -158,7 +158,7 @@ class Network():
         return a, b
 
 
-    def dataset(self, x, y, test_size=0.8 ):
+    def dataset(self, x, y, test_size=0.8):
         np.random.seed()
         rnd_state = np.random.get_state()
         np.random.shuffle(x)
