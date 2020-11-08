@@ -88,7 +88,7 @@ class Network():
             print(f"Input Layer:\tNeurons:{self.architecture['1']['weight'].shape[0]}")
             for i in self.architecture:
                 neurons = self.architecture[i]['weight'].shape[1]
-                activation = self.architecture[i]['activation']
+c                activation = self.architecture[i]['activation'].capitalize()
                 parameters = self.architecture[i]["weight"].shape[0]*self.architecture[i]["weight"].shape[1]
                 parameters += self.architecture[i]["bias"].shape[0]*self.architecture[i]["bias"].shape[1]
                 total_parameters += parameters
@@ -260,4 +260,4 @@ class Network():
 if __name__ == "__main__":
     net = Network()
     net.init([3, 5, 7, 2], ["sigmoid", "sigmoid", "sigmoid"])
-    net.print_model()
+    net.summary()

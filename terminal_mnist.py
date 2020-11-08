@@ -28,7 +28,7 @@ y_pred = net.predict(x_test)
 newypred = []
 for i in y_pred:
     newypred.append(np.argmax(i))
-    
+
 y_pred = np.array(newypred)
 
 cmatrix = confusion_matrix(y_test, y_pred)
