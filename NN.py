@@ -236,24 +236,25 @@ class Network():
             batches_x = np.array_split(X, batches)
             batches_y = np.array_split(Y, batches)
 
-            it = 0
+            it = 1
             print(f"Epoch {epoch}/{epochs}\t")
-            
+            epoch_loss = []
+
             for batch_x, batch_y in zip(batches_x, batches_y):
-                batch_loss = []
                 x_trainb, x_testb, y_trainb, y_testb = self.dataset(batch_x, batch_y)
+                
                 batch_nablas = self.backpropagation(x_trainb, y_trainb)
                 y_pred = self.predict(x_testb)
-                loss = self.cost(y_pred, y_testb)
-                batch_loss.append(loss)
+                batch_loss = self.cost(y_pred, y_testb)
+                epoch_loss.append(batch_loss)
+                loss = np.mean(epoch_loss)
                 self.update_weights(batch_nablas, l_rate)
                 
-                if it+1 == len(batches_x):
-                    loss = np.mean(batch_loss)
-                    self.history["loss"].append(loss)
-                
-                print_progress_bar(it + 1, len(batches_x), prefix=f"{it+1}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=40)
+                print_progress_bar(it , len(batches_x), prefix=f"{it}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=40)
                 it += 1
+            
+            self.history["loss"].append(loss)
+            
 
 
 
