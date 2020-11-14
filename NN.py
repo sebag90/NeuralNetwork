@@ -36,8 +36,7 @@ def print_progress_bar(iteration, total, prefix = "", suffix = "", decimals = 1,
         print()
     
     
-class Network():
-    
+class Network:
     
     def __init__(self):
         self.architecture = {}
