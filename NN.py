@@ -46,20 +46,29 @@ class Network:
             "softmax" : self.softmax,
             "sigmoid" : self.sigmoid,
             "linear": self.linear,
-            "tanh" : self.tanh        
+            "tanh" : self.tanh,
+            "swish" : self.swish, 
+            "lrelu" : self.lrelu      
             }
 
+        self.cost_funcs = {
+            "squared" : self.squared_error,
+            "cross_entropy" : self.cross_entropy
+        }
+        self.cost = None
             
     # INITIALIZE, PRINT LOAD AND SAVE MODEL--------
             
-    def init(self, sizes, activations):
+    def init(self, sizes, activations, cost):
+        self.cost = self.cost_funcs[cost]
+        
         if len(sizes) -1 != len(activations):
             print("number of activations must be equal to number of layers - 1")
         else:
             for i in range(len(sizes) -1):
                 self.architecture[str(i+1)] = {
-                    "weight" : np.random.uniform(-1, 1, (sizes[i], sizes[i+1])),
-                    "bias" : np.random.uniform(-1, 1, (1, sizes[i+1])),
+                    "weight" : np.random.uniform(-1, 1, (sizes[i], sizes[i+1])).astype("float32"),
+                    "bias" : np.random.uniform(-1, 1, (1, sizes[i+1])).astype("float32"),
                     "activation" : activations[i]
                 }
 
@@ -75,6 +84,7 @@ class Network:
            
     
     def save_model(self):
+        self.architecture["cost"] = self.cost
         with open("model.json", "w", encoding="utf-8") as json_f:
             json.dump(self.architecture, json_f, cls=NumpyEncoder, ensure_ascii=False, indent=4)
 
@@ -102,13 +112,41 @@ class Network:
             return self.sigmoid(z) * (1 - self.sigmoid(z))
         else:
             return 1.0/(1.0 + np.exp(-z))
-    
+
+        
+# def softmax(self, z, deriv=False):
+#     if deriv == True:
+#         m, n = z.shape
+#         p = self.softmax(z)
+#         tensor1 = np.einsum('ij,ik->ijk', p, p)
+#         tensor2 = np.einsum('ij,jk->ijk', p, np.eye(n, n))
+#         dSoftmax = tensor2 - tensor1
+#         return np.einsum('ijk,ik->ij', dSoftmax)
+#     else:
+#         m = np.max(z, axis=1, keepdims=True)
+#         e = np.exp(z - m)
+#         return e / np.sum(e, axis=1, keepdims=True)
+
+
+    def swish(self, z, deriv=False):
+        if deriv == True:
+            return self.relu(z) + self.sigmoid(z)*(1 - self.relu(z))
+        else:
+            return z * self.sigmoid(z)
+
         
     def relu(self, z, deriv=False):
         if deriv == True:
             return (z > 0).astype(z.dtype)
         else:
             return np.maximum(0, z)
+
+
+    def lrelu(self, z, deriv=False, alpha=0.01):
+        if deriv == True:
+            return np.where(z <= 0, 0, alpha)
+        else:
+            return np.maximum(alpha * z, z)
 
         
     def softmax(self, z, deriv=False):
@@ -136,14 +174,28 @@ class Network:
 
     # ERROR-----------------------------------
     
-    def cost(self, y_pred, y_true, deriv = False):
+    def squared_error(self, y_pred, y_true, deriv = False):
         if deriv == False:
-            n = y_pred.shape[1]
-            cost = 1/(n**2) * np.sum((y_true.reshape(y_pred.shape) - y_pred)**2)
+            cost = (y_pred - y_true)**2 / 2
             return cost
+
         else:
-            cost_prime = y_pred - y_true.reshape(y_pred.shape)
+            cost_prime = y_pred - y_true#.reshape(y_pred.shape)
             return cost_prime
+
+
+    def cross_entropy(self, prediction, target, deriv=False):
+        epsilon = 1e-11
+        if deriv == False:
+            clipped = np.clip(prediction, epsilon, 1 - epsilon)
+            cost = target * np.log(clipped) + (1 - target) * np.log(1 - clipped)
+            return -cost
+        
+        else:
+            denominator = np.maximum(prediction - prediction ** 2, epsilon)
+            delta = (prediction - target) / denominator
+            assert delta.shape == target.shape == prediction.shape
+            return delta
 
     
     # METHODS---------------------------------
@@ -197,6 +249,7 @@ class Network:
     def backpropagation(self, x, y):
         deltas = {}
         nablas = {}
+
         for i in range(len(self.architecture)):
             nablas[str(i +1)] = {"weight": np.zeros((self.architecture[str(i+1)]["weight"]).shape) ,
                             "bias" : np.zeros((self.architecture[str(i+1)]["bias"]).shape)}
@@ -259,5 +312,5 @@ class Network:
 
 if __name__ == "__main__":
     net = Network()
-    net.init([3, 5, 7, 2], ["sigmoid", "sigmoid", "sigmoid"])
+    net.init([3, 5, 7, 2], ["sigmoid", "sigmoid", "sigmoid"], "cross_entropy")
     net.summary()

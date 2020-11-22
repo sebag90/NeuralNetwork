@@ -15,9 +15,9 @@ x_train = (x_train/255).astype('float32')
 x_test = (x_test/255).astype('float32')
 
 net = Network()
-net.init([784, 128, 64, 10], ["relu", "sigmoid", "softmax"])
+net.init([784, 128, 64, 10], ["relu", "sigmoid", "softmax"], "cross_entropy")
 
-net.fit(x_train, y_train, epochs=5)
+net.fit(x_train, y_train, epochs=5, l_rate=0.01)
 
 y_pred = net.predict(x_test)
 

@@ -139,3 +139,5 @@ output1d.py
 output2d.py
 kerasmnist.py
 
+nn_numby.py
+nn_numba_acc.py
