@@ -20,7 +20,7 @@ The following activation functions are currently supported:
 * ReLu
 * Softmax
 * Tanh
-* Linear function (work in progress)
+* Linear function
 * leaky relu
 * swish
 
@@ -36,7 +36,11 @@ The second option is to load a model from a JSON file which can be either create
 The neural network in the picture above will be initialized like this:  
 ```python
 net = Network()
-net.init([3, 5, 5, 2], ["relu", "sigmoid", "softmax"], "cross_entropy")
+net.init(input_dimension=3, loss_function="cross entropy", layers=[
+    {"units": 5, "activation": "sigmoid", "type":"dense"},
+    {"units": 5, "activation": "sigmoid", "type":"dense"},
+    {"units": 2, "activation": "softmax", "type":"dense"}
+])
 
 # Activations: relu, sigmoid, softmax, tanh, linear
 ```

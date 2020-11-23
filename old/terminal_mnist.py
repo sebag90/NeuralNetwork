@@ -1,4 +1,4 @@
-from network import Network
+from NN import *
 from sklearn.metrics import accuracy_score
 import numpy as np
 from sklearn.metrics import confusion_matrix
@@ -15,14 +15,9 @@ x_train = (x_train/255).astype('float32')
 x_test = (x_test/255).astype('float32')
 
 net = Network()
+net.init([784, 128, 64, 10], ["relu", "tanh", "softmax"], "cross_entropy")
 
-net.init(input_dimension=784, loss_function="cross entropy", layers=[
-    {"units": 128, "activation": "sigmoid", "type":"dense"},
-    {"units": 64, "activation": "sigmoid", "type":"dense"},
-    {"units": 10, "activation": "softmax", "type":"dense"}
-])
-
-net.fit(x_train, y_train, epochs=5)
+net.fit(x_train, y_train, epochs=5, l_rate=0.01)
 
 y_pred = net.predict(x_test)
 

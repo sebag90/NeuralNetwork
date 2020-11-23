@@ -151,7 +151,7 @@ class Network:
         
     def softmax(self, z, deriv=False):
         if deriv == True:
-            return self.softmax(z) * (1 - self.softmax(z))
+            return 1
         else:
             m = np.max(z, axis=1, keepdims=True)
             e = np.exp(z - m)
@@ -263,10 +263,12 @@ class Network:
         
         for l in range(len(self.architecture), 1, -1):
             acti_f = self.activation_funcs[self.architecture[str(l-1)]["activation"]]
+            
             Eh = np.dot(deltas[str(l)], self.architecture[str(l)]["weight"].T) * acti_f(memory[str(l-1)]["z"], deriv=True)
             deltas[str(l-1)] = Eh
 
         for l in range(len(self.architecture)):
+            
             nablas[str(l+1)]["weight"] = np.dot(deltas[str(l+1)].T, memory[str(l)]["activation"]).T
             nablas[str(l+1)]["bias"] = np.expand_dims(deltas[str(l+1)].mean(axis=0), 0)
             
@@ -311,6 +313,16 @@ class Network:
 
 
 if __name__ == "__main__":
+    np.random.seed(43)
     net = Network()
-    net.init([3, 5, 7, 2], ["sigmoid", "sigmoid", "sigmoid"], "cross_entropy")
-    net.summary()
+    import time
+    net.init([3, 10, 12, 3], ["sigmoid", "relu", "softmax"], "cross_entropy")
+
+    
+    
+    x = np.random.rand(100000, 3)
+
+    result = net.predict(x)
+
+    print(result)
+    
