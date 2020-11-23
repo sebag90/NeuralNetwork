@@ -47,7 +47,7 @@ net.init(input_dimension=3, loss_function="cross entropy", layers=[
 
 After initialization, the neural network can be trained:  
 ```python
-net.fit(x_train, y_train, l_rate=0.01, epochs=10, batch_size=32)
+fit(self, x, y, learning_rate=0.01, epochs=10, batch_size=32)
 
 # l_rate = learning rate, default = 0.01
 # epochs = number of epochs used for training, default = 10
