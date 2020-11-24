@@ -3,10 +3,12 @@ import numpy as np
 class SquaredError:
 
     def __call__(self, predictions, target):
+        target = target.reshape(predictions.shape)
         return (predictions - target)**2 / 2
 
     def prime(self, predictions, target):
-        return predictions - target#.reshape(predictions.shape)
+        target = target.reshape(predictions.shape)
+        return predictions - target
 
 
 class CrossEntropy:
