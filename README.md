@@ -36,20 +36,21 @@ The second option is to load a model from a JSON file which can be either create
 The neural network in the picture above will be initialized like this:  
 ```python
 net = Network()
+
 net.init(input_dimension=3, loss_function="cross entropy", layers=[
     {"units": 5, "activation": "sigmoid", "type":"dense"},
     {"units": 5, "activation": "sigmoid", "type":"dense"},
     {"units": 2, "activation": "softmax", "type":"dense"}
 ])
 
-# Activations: relu, sigmoid, softmax, tanh, linear
+# Activations: relu, sigmoid, softmax, tanh, linear, lrelu, swish
 ```
 
 After initialization, the neural network can be trained:  
 ```python
-fit(self, x, y, learning_rate=0.01, epochs=10, batch_size=32)
+net.fit( x, y, learning_rate=0.01, epochs=10, batch_size=32)
 
-# l_rate = learning rate, default = 0.01
+# learning_rate = learning rate, default = 0.01
 # epochs = number of epochs used for training, default = 10
 # batch_size = lenght of each mini batch, default = 32
 ```
