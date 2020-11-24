@@ -298,11 +298,11 @@ class Network:
                 x_trainb, x_testb, y_trainb, y_testb = self.dataset(batch_x, batch_y)
                 
                 batch_nablas = self.backpropagation(x_trainb, y_trainb)
+                self.update_weights(batch_nablas, l_rate)
                 y_pred = self.predict(x_testb)
                 batch_loss = self.cost(y_pred, y_testb)
                 epoch_loss.append(batch_loss)
                 loss = np.mean(epoch_loss)
-                self.update_weights(batch_nablas, l_rate)
                 
                 print_progress_bar(it , len(batches_x), prefix=f"{it}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=40)
                 it += 1
