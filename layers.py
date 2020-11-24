@@ -21,9 +21,7 @@ class Dense:
 
     def forward(self, x):
         self.incoming = x
-
         z = np.dot(x, self.weight) + self.bias
-       
         self.memory_z = z
        
         return self.activation(z)
