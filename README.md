@@ -21,8 +21,8 @@ The following activation functions are currently supported:
 * Softmax
 * Tanh
 * Linear function
-* leaky relu
-* swish
+* Leaky ReLu
+* Swish
 
 Error functions:  
 * Squared Loss
