@@ -17,7 +17,7 @@ x_test = (x_test/255).astype('float32')
 net = Network()
 
 net.init(input_dimension=784, loss_function="cross entropy", layers=[
-    {"units": 128, "activation": "sigmoid", "type":"dense"},
+    {"units": 128, "activation": "relu", "type":"dense"},
     {"units": 64, "activation": "sigmoid", "type":"dense"},
     {"units": 10, "activation": "softmax", "type":"dense"}
 ])

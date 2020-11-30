@@ -9,7 +9,7 @@ class Network:
 
     def __init__(self):
         self.layers = []
-        self.history = { "loss": []}
+        self.history = {"loss": []}
         self.cost = None
 
         self.activation_funcs = {
@@ -42,7 +42,10 @@ class Network:
             for i in range(len(layers) - 1):
                 layer_type = self.layer_types[layers[i+1]["type"]]
                 activation = self.activation_funcs[layers[i+1]["activation"]]
-                layer = layer_type(layers[i]["units"], layers[i+1]["units"], activation)
+                input_units = layers[i]["units"]
+                output_units = layers[i+1]["units"]
+
+                layer = layer_type(input_units, output_units, activation)
                 self.layers.append(layer)
 
         else:
