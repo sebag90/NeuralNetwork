@@ -58,16 +58,12 @@ class Network:
 
         else:
             print(f"Input:\t\tUnits: {self.layers[0].weight.shape[0]}")
-
-            i = 1
-            for layer in self.layers:
-
-                if i != len(self.layers):
-                    print(f"Layer {i}:\t{layer}")
+            
+            for i, layer in enumerate(self.layers):
+                if i+1 != len(self.layers):
+                    print(f"Layer {i+1}:\t{layer}")
                 else:
                     print(f"Output:\t\t{layer}")
-                                
-                i += 1
 
 
     def predict(self, x):
