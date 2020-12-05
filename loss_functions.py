@@ -12,6 +12,9 @@ class SquaredError:
 
 
 class CrossEntropy:
+    """
+    only available with a softmax output layer
+    """
 
     def __init__(self, epsilon = 1e-11):
         self.epsilon = epsilon

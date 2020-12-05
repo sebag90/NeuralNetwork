@@ -33,6 +33,29 @@ class Network:
 
 
     def init(self, input_dimension, loss_function, layers):
+        """
+        function to initialize the network based on input parameters:
+        
+        net.init(input_dimension=784, loss_function="cross entropy", layers=[
+            {"units": 128, "activation": "relu", "type":"dense"},
+            {"units": 64, "activation": "sigmoid", "type":"dense"},
+            {"units": 10, "activation": "softmax", "type":"dense"}
+        ])
+
+        input: 
+            input_dimension: number of dimensions (columns) of the input matrix
+        
+        loss_function: 
+            loss function for the neural network (cross entropy or squared error)
+        
+        layers:
+            a list of dictionaries with following structure:
+                {"units": 64, "activation": "sigmoid", "type":"dense"}
+            
+            units: number of units in the layer
+            activation: activation function for the layer
+            type: type of layer         
+        """
         self.cost = self.cost_funcs[loss_function]
         layers = [{"units": input_dimension}] + layers
         
@@ -53,6 +76,14 @@ class Network:
 
 
     def summary(self):
+        """
+        print a summary of the Network 
+        example:
+            Input:		Units: 784
+            Layer 1:	Units: 128,	Activation: ReLu,	Type: Dense
+            Layer 2:	Units: 64,	Activation: Sigmoid,	Type: Dense
+            Output:		Units: 10,	Activation: Softmax,	Type: Dense
+        """
         if len(self.layers) == 0:
             print("The model was not initialized")
 
@@ -67,6 +98,11 @@ class Network:
 
 
     def predict(self, x):
+        """
+        forward step over the entire network (layer for layer).
+        input: input matrix
+        output: predictions
+        """
         for layer in self.layers:
             x = layer.forward(x)
 
@@ -74,6 +110,12 @@ class Network:
 
 
     def backpropagation(self, x, y, learning_rate):
+        """
+        backpropagation (single learning step) layer for layer
+        through the entire network.     
+
+        input: input matrix x, target labels y and learning rate
+        """
         prediction = self.predict(x)
         error = self.cost.prime(prediction, y)
 
@@ -82,6 +124,20 @@ class Network:
         
 
     def fit(self, x, y, learning_rate=0.01, epochs=10, batch_size=32):
+        """
+        function to train the neural network using mini batches.
+
+        input: 
+            x: matrix x of the train set 
+            y: target labels for the input x
+            learning_rate: learning_rate of the network
+            epochs: number of epochs (how many times the network looks over the entire
+                    training data set)
+            batch_size: number of instances in every minibatch
+
+        At the end of the training the network is ready to make predictions.
+        The loss over every epoch is saved in the attribute self.history["loss"] (dictionary)
+        """
         x = x.astype("float32")
         y = y.astype("float32")
         for epoch in range(1, epochs + 1):

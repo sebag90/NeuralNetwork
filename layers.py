@@ -5,6 +5,10 @@ import numpy as np
 class Dense:
 
     def __init__(self, incoming_size, outgoing_size, activation):
+        """
+        initialize a fully connected layer based on incoming
+        and outgoing size of the matrix and activation function
+        """
         self.weight = np.random.uniform(-1, 1, (incoming_size, outgoing_size)).astype("float32")
         self.bias = np.random.uniform(-1, 1, (1, outgoing_size)).astype("float32")
         self.activation = activation
@@ -20,6 +24,14 @@ class Dense:
 
 
     def forward(self, x):
+        """
+        Forward step through the layer:
+        input * weights + bias --> activation function
+        z (input + weight + bias) will be saved for backpropagation
+
+        input: matrix x
+        output: matrix x
+        """
         self.incoming = x
         z = np.dot(x, self.weight) + self.bias
         self.memory_z = z
@@ -28,6 +40,15 @@ class Dense:
 
 
     def backward(self, cost, learning_rate = 0.01):
+        """
+        backpropagation and weight update through the layer
+        the derivative of the cost with respect to the weights 
+        is calculated and the weights are updated in a single 
+        step (avoids second loop over layer to update)
+
+        input: cost from next layer (right side)
+        output:  cost for the previous layer (left side)
+        """
 
         # calculate delta
         self.delta = cost * self.activation.prime(self.memory_z)

@@ -10,21 +10,35 @@ def print_progress_bar(iteration, total, prefix = "", suffix = "", decimals = 1,
         print()
 
 
-def shuffle(a, b):
-    np.random.seed()
-    rnd_state = np.random.get_state()
-    np.random.shuffle(a)
-    np.random.set_state(rnd_state)
-    np.random.shuffle(b)
-    return a, b
+def shuffle(x, y):
+    """
+    takes 2 vectors as input and shuffles them 
+    keeping the correlation between the elements
+    of the vectors
 
-
-def dataset(x, y, test_size=0.8):
+    example:
+        input:
+            [1, 2, 3, 4, 5] 
+            [6, 7, 8, 9, 0]
+        output:
+            [3, 5, 2, 4, 1]
+            [8, 0, 7, 9, 6]
+    """
     np.random.seed()
     rnd_state = np.random.get_state()
     np.random.shuffle(x)
     np.random.set_state(rnd_state)
     np.random.shuffle(y)
+    return x, y
+
+
+def dataset(x, y, test_size=0.8):
+    """
+    shuffles a vector of instances x and corresponding
+    labels y and divide them in test and train data sets 
+    based on test_size (standard 80% train, 20%test)
+    """
+    x, y = shuffle(x, y)
 
     limit = int(len(x)*test_size)
 

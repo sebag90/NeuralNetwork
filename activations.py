@@ -3,6 +3,9 @@ import numpy as np
 
 
 class sigmoid:
+    """
+    takes a real value as input and outputs another value between 0 and 1.
+    """
 
     def __call__(self, z):
         return 1 / (1 + np.exp(-z))
@@ -15,6 +18,9 @@ class sigmoid:
 
 
 class relu:
+    """
+    returns 0 if the input z is lower than 0, otherwise is linear (returns z)
+    """
 
     def __call__(self, z):
         return np.maximum(0, z)
@@ -27,6 +33,9 @@ class relu:
 
 
 class lrelu:
+    """
+    like relu, but instead of 0 it returns z multiplied by a (very small) alpha
+    """
 
     def __init__(self, alpha=0.01):
         self.alpha = alpha
@@ -42,6 +51,10 @@ class lrelu:
 
 
 class swish:
+    """
+    new activation function proposed by google
+    https://arxiv.org/abs/1710.05941
+    """
 
     def __call__(self, z):
         return z * sigmoid(z)
@@ -56,6 +69,10 @@ class swish:
 class softmax:
 
     """
+    Softmax function calculates the probabilities distribution of 
+    the event over ‘n’ different events (one output unit for every class) 
+
+    ---
     the softmax activation function can only work as an output layer
     together with the cross entropy loss function.
     since the derivative is set to 1, the softmax layer will directly
@@ -76,6 +93,9 @@ class softmax:
 
 
 class identity:
+    """
+    linear activation function (returns the input)
+    """
 
     def __call__(self, z):
         return z
@@ -88,6 +108,9 @@ class identity:
 
 
 class tanh:
+    """
+    Tanh squashes a real-valued number to the range [-1, 1]
+    """
 
     def __call__(self, z):
         return np.tanh(z)
