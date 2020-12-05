@@ -79,10 +79,10 @@ class Network:
         """
         print a summary of the Network 
         example:
-            Input:		Units: 784
-            Layer 1:	Units: 128,	Activation: ReLu,	Type: Dense
-            Layer 2:	Units: 64,	Activation: Sigmoid,	Type: Dense
-            Output:		Units: 10,	Activation: Softmax,	Type: Dense
+            Input:      Units: 784
+            Layer 1:    Units: 128,	Activation: ReLu,	Type: Dense
+            Layer 2:    Units: 64,	Activation: Sigmoid,	Type: Dense
+            Output:     Units: 10,	Activation: Softmax,	Type: Dense
         """
         if len(self.layers) == 0:
             print("The model was not initialized")
