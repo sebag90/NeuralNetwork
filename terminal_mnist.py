@@ -1,4 +1,4 @@
-from network import Network
+from nn.network import Network
 from sklearn.metrics import accuracy_score
 import numpy as np
 from sklearn.metrics import confusion_matrix

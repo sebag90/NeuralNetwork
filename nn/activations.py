@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 class sigmoid:
     """
     takes a real value as input and outputs another value between 0 and 1.

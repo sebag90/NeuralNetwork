@@ -1,8 +1,8 @@
 import numpy as np 
-import layers as layers
-import activations as activation
-import loss_functions as error
-import extra_functions as extra
+import nn.layers as layers
+import nn.activations as activation
+import nn.loss_functions as error
+import nn.extra_functions as extra
 
 
 class Network:
