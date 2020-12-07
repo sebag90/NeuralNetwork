@@ -7,6 +7,9 @@ class sigmoid:
     """
 
     def __call__(self, z):
+        """
+        numeric stable version of: 1.0 / (1.0 + np.exp(-z))
+        """
         return np.exp(-np.logaddexp(0, -z))
 
     def prime(self, z):
