@@ -33,7 +33,7 @@ class Dense:
         output: matrix x
         """
         self.incoming = x
-        z = np.dot(x, self.weight) + self.bias
+        z = np.add(np.matmul(x, self.weight), self.bias)
         self.memory_z = z
        
         return self.activation(z)
@@ -51,16 +51,16 @@ class Dense:
         """
 
         # calculate delta
-        self.delta = cost * self.activation.prime(self.memory_z)
+        self.delta = np.multiply(cost, self.activation.prime(self.memory_z))
 
         # calculate nabla for weight and bias
-        self.nabla_w = np.dot(self.delta.T, self.incoming).T
+        self.nabla_w = np.matmul(self.delta.T, self.incoming).T
         self.nabla_b = np.expand_dims(self.delta.mean(axis=0), 0)
 
-        to_return =  np.dot(self.delta, self.weight.T)
+        to_return =  np.matmul(self.delta, self.weight.T)
 
         # update weight and bias
-        self.weight -= learning_rate * self.nabla_w
-        self.bias   -= learning_rate * self.nabla_b
+        self.weight -= np.multiply(learning_rate, self.nabla_w)
+        self.bias   -= np.multiply(learning_rate, self.nabla_b)
 
         return to_return

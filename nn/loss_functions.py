@@ -1,15 +1,19 @@
 import numpy as np
 
 class SquaredError:
+    """
+    call returns (predictions - target)**2 / 2
+    """
 
     def __call__(self, predictions, target):
         target = target.reshape(predictions.shape)
         return (predictions - target)**2 / 2
+        #return np.divide(np.power(np.subtract(predictions, target), 2), 2)
 
     def prime(self, predictions, target):
         target = target.reshape(predictions.shape)
         return predictions - target
-
+        #return np.subtract(predictions, target)
 
 class CrossEntropy:
     """

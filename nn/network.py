@@ -151,7 +151,7 @@ class Network:
             epoch_loss = []
 
             for batch_x, batch_y in zip(batches_x, batches_y):
-                x_trainb, x_testb, y_trainb, y_testb = extra.dataset(batch_x, batch_y)
+                x_trainb, x_testb, y_trainb, y_testb = extra.split_dataset(batch_x, batch_y)
                 self.backpropagation(x_trainb, y_trainb, learning_rate)
                 y_pred = self.predict(x_testb)
                 batch_loss = self.cost(y_pred, y_testb)

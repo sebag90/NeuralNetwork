@@ -32,7 +32,7 @@ def shuffle(x, y):
     return x, y
 
 
-def dataset(x, y, test_size=0.8):
+def split_dataset(x, y, test_size=0.8):
     """
     shuffles a vector of instances x and corresponding
     labels y and divide them in test and train data sets 
