@@ -28,7 +28,7 @@ class relu:
         return np.maximum(0, z)
 
     def prime(self, z):
-        return (z > 0).astype("float32")
+        return np.maximum(0, z)#return (z > 0).astype("float32")
 
     def __repr__(self):
         return "ReLu"

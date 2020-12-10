@@ -52,11 +52,10 @@ class Dense:
 
         # calculate delta
         self.delta = np.multiply(cost, self.activation.prime(self.memory_z))
-
+        
         # calculate nabla for weight and bias
-        self.nabla_w = np.matmul(self.delta.T, self.incoming).T
-        self.nabla_b = np.expand_dims(self.delta.mean(axis=0), 0)
-
+        self.nabla_w = np.matmul(self.incoming.T, self.delta)
+        self.nabla_b = np.sum(self.delta, axis=0, keepdims=True)     
         to_return =  np.matmul(self.delta, self.weight.T)
 
         # update weight and bias

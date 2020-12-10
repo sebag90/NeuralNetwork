@@ -141,3 +141,7 @@ kerasmnist.py
 
 nn_numby.py
 nn_numba_acc.py
+motherfucker/_functions.py
+motherfucker/nn.py
+test.py
+stanford.ipynb
