@@ -28,7 +28,7 @@ class relu:
         return np.maximum(0, z)
 
     def prime(self, z):
-        return np.maximum(0, z)#return (z > 0).astype("float32")
+        return (z > 0).astype("float32")
 
     def __repr__(self):
         return "ReLu"
@@ -57,12 +57,15 @@ class swish:
     new activation function proposed by google
     https://arxiv.org/abs/1710.05941
     """
+    def __init__(self):
+        self.sigmoid = sigmoid()
+        self.relu = relu()
 
-    def __call__(self, z):
-        return z * sigmoid(z)
+    def __call__(self, z):    
+        return z * self.sigmoid(z)
 
     def prime(self, z):
-        return relu(z) + sigmoid(z)*(1 - relu(z))
+        return self.relu(z) + self.sigmoid(z)*(1 - self.relu(z))
 
     def __repr__(self):
         return "Swish"
