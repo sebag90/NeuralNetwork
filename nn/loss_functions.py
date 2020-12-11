@@ -25,8 +25,11 @@ class CrossEntropy:
 
 
     def __call__(self, predictions, target):
+        """
+        1e-9 is added to avoid np.log(0) -> divide by 0
+        """
         N = predictions.shape[0]
-        ce = -np.sum(target * np.log(predictions)) / N
+        ce = -np.sum(target * np.log(predictions + 1e-9)) / N
         return ce
 
     def prime(self, predictions, target):

@@ -17,12 +17,12 @@ x_test = (x_test/255).astype('float32')
 net = Network()
 
 net.init(input_dimension=784, loss_function="cross entropy", layers=[
-    {"units": 128, "activation": "swish", "type":"dense"},
-    {"units": 64, "activation": "tanh", "type":"dense"},
+    {"units": 128, "activation": "relu", "type":"dense"},
+    {"units": 64, "activation": "relu", "type":"dense"},
     {"units": 10, "activation": "softmax", "type":"dense"}
 ])
 
-net.fit(x_train, y_train, epochs=5)
+net.fit(x_train, y_train, epochs=10)
 
 y_pred = net.predict(x_test)
 

@@ -123,7 +123,7 @@ class Network:
             error = self.layers[i].backward(error, learning_rate)
         
 
-    def fit(self, x, y, learning_rate=0.01, epochs=10, batch_size=32):
+    def fit(self, x, y, learning_rate=1e-3, epochs=10, batch_size=32):
         """
         function to train the neural network using mini batches.
 

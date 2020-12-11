@@ -39,7 +39,7 @@ class Dense:
         return self.activation(z)
 
 
-    def backward(self, cost, learning_rate = 0.01):
+    def backward(self, cost, learning_rate):
         """
         backpropagation and weight update through the layer
         the derivative of the cost with respect to the weights 
@@ -55,7 +55,8 @@ class Dense:
         
         # calculate nabla for weight and bias
         self.nabla_w = np.matmul(self.incoming.T, self.delta)
-        self.nabla_b = np.sum(self.delta, axis=0, keepdims=True)     
+        self.nabla_b = np.sum(self.delta, axis=0, keepdims=True)  
+
         to_return =  np.matmul(self.delta, self.weight.T)
 
         # update weight and bias
