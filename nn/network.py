@@ -81,7 +81,7 @@ class Network:
         example:
             Input:      Units: 784
             Layer 1:    Units: 128,	Activation: ReLu,       Type: Dense
-            Layer 2:    Units: 64,	Activation: Sigmoid,	Type: Dense
+            Layer 2:    Units: 64,	Activation: ReLu,	Type: Dense
             Output:     Units: 10,	Activation: Softmax,	Type: Dense
         """
         if len(self.layers) == 0:
