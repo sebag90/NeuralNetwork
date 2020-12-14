@@ -22,7 +22,7 @@ net.init(input_dimension=784, loss_function="cross entropy", layers=[
     {"units": 10, "activation": "softmax", "type":"dense"}
 ])
 
-net.fit(x_train, y_train, epochs=10)
+net.fit(x_train, y_train, epochs=5)
 
 y_pred = net.predict(x_test)
 

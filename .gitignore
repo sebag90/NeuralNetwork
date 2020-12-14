@@ -145,3 +145,5 @@ motherfucker/_functions.py
 motherfucker/nn.py
 test.py
 stanford.ipynb
+convolution.py
+timeNN.py

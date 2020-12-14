@@ -1,5 +1,4 @@
 import numpy as np
-
 class SquaredError:
     """
     call returns (predictions - target)**2 / 2

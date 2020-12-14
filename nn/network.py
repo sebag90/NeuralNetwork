@@ -158,7 +158,7 @@ class Network:
                 epoch_loss.append(batch_loss)
                 loss = np.mean(epoch_loss)
                 
-                extra.print_progress_bar(it , len(batches_x), prefix=f"{it}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=40)
+                extra.print_progress_bar(it , len(batches_x), prefix=f"{it}/{len(batches_x)}", suffix=f"Loss: {loss:10.6f}", length=30)
                 it += 1
             
             self.history["loss"].append(loss)
