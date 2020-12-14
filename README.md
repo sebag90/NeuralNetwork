@@ -50,7 +50,7 @@ After initialization, the neural network can be trained:
 ```python
 net.fit( x, y, learning_rate=0.01, epochs=10, batch_size=32)
 
-# learning_rate = learning rate, default = 1e-9
+# learning_rate = learning rate, default = 1e-3
 # epochs = number of epochs used for training, default = 10
 # batch_size = lenght of each mini batch, default = 32
 ```
