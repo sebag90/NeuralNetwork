@@ -24,15 +24,11 @@ def shuffle(x, y):
             [3, 5, 2, 4, 1]
             [8, 0, 7, 9, 6]
     """
-    np.random.seed()
-    rnd_state = np.random.get_state()
-    np.random.shuffle(x)
-    np.random.set_state(rnd_state)
-    np.random.shuffle(y)
-    return x, y
+    p = np.random.permutation(x.shape[0])
+    return x[p], y[p]
 
 
-def split_dataset(x, y, test_size=0.8):
+def split_dataset(x, y, test_size=0.2):
     """
     shuffles a vector of instances x and corresponding
     labels y and divide them in test and train data sets 
@@ -40,7 +36,7 @@ def split_dataset(x, y, test_size=0.8):
     """
     x, y = shuffle(x, y)
 
-    limit = int(len(x)*test_size)
+    limit = x.shape[0] - int(x.shape[0]*test_size)
 
     x_train = x[:limit]
     y_train = y[:limit]
